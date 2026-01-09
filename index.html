@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weather App</title>
+  <style>
+    .container {
+      height: 400px;
+      width: 400px;
+      border-radius: 20px;
+      background-image: url(../project/assets/giphy.webp);
+      padding: 20px;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    #heading {
+      text-align: center;
+      font-style:italic;
+      color:violet;
+
+    }
+
+    #city {
+      width: 200px;
+      height: 30px;
+      border-radius: 20px;
+      text-align: center;
+      border: none;
+      padding-left: 10px;
+      margin-left: 100px;
+      box-shadow: 1px 2px 15px 5px;
+    }
+
+    #getweather {
+      margin-left: 150px;
+      height: 30px;
+      width: 100px;
+      border: none;
+      background-color:aqua;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    #container1 {
+      height: auto;
+      width: 250px;
+      text-align: center;
+      margin: 20px auto;
+      backdrop-filter: blur(10px);
+      padding: 10px;
+      border-radius: 10px;
+      background: rgba(196, 173, 99, 0.3);
+    }
+  </style>
+</head>
+<body>
+    <h1 id="heading">Weather Forecast</h1>
+  <div class="container">
+    <input type="text" id="city" placeholder="Enter a City" /><br><br>
+    <button id="getweather">Get Weather</button>
+    <div id="para"></div>
+  </div>
+
+  <script>
+    let button = document.getElementById("getweather");
+
+    button.addEventListener("click", () => {
+      let city = document.getElementById("city").value.trim();
+      if (city) {
+        fetchdata(city);
+      } else {
+        alert("Enter a city");
+      }
+    });
+
+    async function fetchdata(city) {
+      let apikey = `51fe958114237a0ab2df2ccdf3a051f5`;
+      let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apikey}&units=metric`;
+
+      try {
+        let response = await fetch(url);
+        let result = await response.json();
+
+        if (!response.ok) {
+          alert("Enter a valid city");
+          return;
+        }
+
+        let data = document.getElementById("para");
+        data.innerHTML = `
+          <div id="container1">
+            <h2>City: ${result.name}</h2>
+            <p>Temperature: ${result.main.temp} °C</p>
+            <p>Humidity: ${result.main.humidity}%</p>
+            <p>Description: ${result.weather[0].description}</p>
+            <p>Wind speed: ${result.wind.speed} m/s</p>
+          </div>
+        `;
+
+        console.log(result);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        alert("Something went wrong. Try again.");
+      }
+    }
+  </script>
+</body>
+</html>
